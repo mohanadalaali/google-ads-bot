@@ -230,12 +230,30 @@ def pause_enabled_campaigns(client: GoogleAdsClient, customer_id: str) -> None:
 
 def main() -> None:
     customer_id = env("GOOGLE_ADS_CUSTOMER_ID")
+
     if not customer_id:
-        raise RuntimeError("Missing GOOGLE_ADS_CUSTOMER_ID in .env")
+        notify(
+            [Alert("⚠️", "Google Ads غير مربوط بعد",
+                   "أضف GOOGLE_ADS_CUSTOMER_ID وباقي مفاتيح Google Ads API داخل Railway Variables.",
+                   10)],
+            10
+        )
+        return
+
+    if not GOOGLE_ADS_ENABLED:
+        notify(
+            [Alert("⚠️", "Google Ads Library غير مثبتة",
+                   "تأكد أن google-ads موجودة داخل requirements.txt.",
+                   10)],
+            10
+        )
+        return
+
     client = build_google_ads_client()
     alerts: List[Alert] = []
     alerts += check_ads(client, customer_id)
     alerts += check_campaign_costs(client, customer_id)
+
     total_risk = sum(a.risk for a in alerts)
     notify(alerts, total_risk)
 
