@@ -7,8 +7,12 @@ from typing import List, Dict, Any
 
 import requests
 from dotenv import load_dotenv
-from google.ads.googleads.client import GoogleAdsClient
-from google.ads.googleads.errors import GoogleAdsException
+try:
+    from google.ads.googleads.client import GoogleAdsClient
+    from google.ads.googleads.errors import GoogleAdsException
+    GOOGLE_ADS_ENABLED = True
+except:
+    GOOGLE_ADS_ENABLED = False
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
